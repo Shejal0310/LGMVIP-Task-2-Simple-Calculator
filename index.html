@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="icon" type="image/png" href="favicon.png" sizes="16x16" />
+
+    <title>Calculator</title>
+
+    <style>
+        body {
+    background-color: #E9E9E9;
+    /* background-color: #f0ecfc;
+    background-image: linear-gradient(315deg, #f0ecfc 0%, #c797eb 74%); */
+}
+
+#container {
+    width: 1050px;
+    height: 550px;
+    background-image: url(BI.jpg);
+    margin: 30px auto;
+    margin-top: 0px;
+    margin-bottom:5px;
+}
+
+#calculator {
+    width: 320px;
+    height: 0px;
+    /* background-color: rgb(19, 165, 109); */
+    background-color: #b3cdd1;
+    background-image: linear-gradient(315deg, #b3cdd1 0%, #9fa4c4 74%);
+    margin: 0 auto;
+    top: 20px;
+    position: relative;
+    border-radius: 5px;
+    box-shadow: 8px 8px 10px 1px #9fe291;
+}
+
+#result {
+    height: 130px;
+}
+
+#history {
+    text-align: right;
+    height: 20px;
+    margin: 20px auto;
+    padding-top: 20px;
+    font-size: 15px;
+}
+
+#output {
+    text-align: right;
+    height: 60px;
+    margin: 10px 20px;
+    font-size: 28px;
+}
+
+#keyboard {
+    height: 150px;
+}
+
+.operator,
+.number,
+.empty {
+    width: 50px;
+    height: 50px;
+    margin: 15px;
+    float: left;
+    border-radius: 50%;
+    border-width: 0.02px;
+    font-weight: bold;
+    font-size: 15px;
+}
+
+.empty {
+    border-width: 0px;
+}
+
+.number,
+.empty {
+    background-color: #b3cdd1;
+    background-image: linear-gradient(315deg, #b3cdd1 0%, #9fa4c4 74%);
+}
+
+.number,
+.operator {
+    cursor: pointer;
+}
+
+.operator:focus,
+.number:focus,
+.empty:focus {
+    outline: 0;
+}
+
+.operator:active,
+.number:active {
+    font-size: 14px;
+}
+
+
+/* now,we have to provide color to every operator via. child to every 4th operator/child */
+
+button:nth-child(3) {
+    font-size: 20px;
+    background-color: #f0596b;
+    background-image: linear-gradient(315deg, #8a464d 0%, #b91372 74%);
+}
+
+button:nth-child(4) {
+    font-size: 20px;
+    background-color: #f7b42c;
+    background-image: linear-gradient(315deg, #f7b42c 0%, #fc575e 74%);
+}
+
+button:nth-child(8) {
+    font-size: 20px;
+    background-color: #63a4ff;
+    background-image: linear-gradient(315deg, #63a4ff 0%, #83eaf1 74%);
+}
+
+button:nth-child(12) {
+    font-size: 20px;
+    background-color: #eec0c6;
+    background-image: linear-gradient(315deg, #eec0c6 0%, #e58c8a 74%);
+}
+
+button:nth-child(16) {
+    font-size: 20px;
+    background-color: #fbb034;
+    background-image: linear-gradient(315deg, #fbb034 0%, #ffdd00 74%);
+}
+
+button:nth-child(20) {
+    font-size: 20px;
+    background-color: #3bb78f;
+    background-image: linear-gradient(315deg, #3bb78f 0%, #0bab64 74%);
+}
+    </style>
+</head>
+
+
+<body>
+    <!-- main image id container  -->
+    <div id="container">
+        <!-- calculator id, it contains result( history and output) and keyboard also -->
+        <div id="calculator">
+
+            <div id="result">
+                <!-- history section -->
+                <div id="history">
+                    <p id="history-value">  </p>
+                </div>
+                <!-- output section -->
+                <div id="output">
+                    <p id="output-value">  </p>
+                </div>
+
+            </div>
+            <!-- keyboard section -->
+            <div id="keyboard">
+                <button class="operator" id="clear">Clear all</button>
+                <button class="operator" id="backspace">BS </button>
+                <button class="operator" id="%">%</button>
+                <button class="operator" id="/">&#247;</button>
+                <button class="number" id="7">7</button>
+                <button class="number" id="8">8</button>
+                <button class="number" id="9">9</button>
+                <button class="operator" id="*">&times;</button>
+                <button class="number" id="4">4</button>
+                <button class="number" id="5">5</button>
+                <button class="number" id="6">6</button>
+                <button class="operator" id="-">-</button>
+                <button class="number" id="1">1</button>
+                <button class="number" id="2">2</button>
+                <button class="number" id="3">3</button>
+                <button class="operator" id="+">+</button>
+                <button class="empty" id="empty"></button>
+                <button class="number" id="0">0</button>
+                <button class="empty" id="empty"></button>
+                <button class="operator" id="=">=</button>
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <script>
+        function getHistory() {
+    return document.getElementById("history-value").innerText;
+}
+
+function printHistory(num) {
+    document.getElementById("history-value").innerText = num;
+
+}
+
+function getOutput(num) {
+    return document.getElementById("output-value").innerText;
+}
+
+function printOutput(num) {
+    if (num == "") {
+        document.getElementById("output-value").innerText = num;
+    } else {
+        document.getElementById("output-value").innerText = getFormattedNumber(num);
+    }
+}
+
+function getFormattedNumber(num) {
+    if (num == "-") {
+        return "";
+    }
+    var n = Number(num);
+    var value = n.toLocaleString("en");
+    return value;
+}
+
+function reverseNumberFormat(num) {
+    return Number(num.replace(/,/g, ""));
+}
+
+var operator = document.getElementsByClassName("operator");
+for (var i = 0; i < operator.length; i++) {
+    operator[i].addEventListener('click', function() {
+        if (this.id == "clear") {
+            printHistory("");
+            printOutput("");
+        } else if (this.id == "backspace") {
+            var output = reverseNumberFormat(getOutput()).toString();
+            if (output) { //if output has a value
+                output = output.substr(0, output.length - 1);
+                printOutput(output);
+            }
+        } else {
+            var output = getOutput();
+            var history = getHistory();
+
+            if (output == "" && history != "") {
+                if (isNaN(history[history.length - 1])) {
+                    history = history.substr(0, history.length - 1);
+                }
+            }
+            if (output != "" || history != "") {
+                output = output == "" ? output : reverseNumberFormat(output);
+                history = history + output;
+                if (this.id == "=") {
+                    var result = eval(history);
+                    printOutput(result);
+                    printHistory("");
+                } else {
+                    history = history + this.id;
+                    printHistory(history);
+                    printOutput("");
+                }
+            }
+        }
+
+    });
+}
+
+
+// var number = document.getElementsByClassName("number");
+// for (var i = 0; i < number.length; i++) {
+//     number[i].addEventListener('click', function() {});
+// }
+
+var number = document.getElementsByClassName("number");
+for (var i = 0; i < number.length; i++) {
+    number[i].addEventListener('click', function() {
+        var output = reverseNumberFormat(getOutput());
+        if (output != NaN) { //if output is a number
+            output = output + this.id;
+            printOutput(output);
+        }
+    });
+}
+    </script>
+</body>
+
+</html>
